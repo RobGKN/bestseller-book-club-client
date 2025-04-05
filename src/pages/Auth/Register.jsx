@@ -20,7 +20,7 @@ const Register = () => {
   const onSubmit = async (data) => {
     setIsSubmitting(true);
     try {
-      await signup(data.email, data.password, data.username, data.name);
+      await signup(data);
       toast.success('Account created!');
       navigate('/');
     } catch (err) {
