@@ -1,3 +1,4 @@
+// src/context/AuthContext.jsx
 import { createContext, useState, useEffect } from 'react';
 import { authAPI } from '../services/api';
 
@@ -8,18 +9,18 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Check for logged in user on mount
+  // 🔐 Check for a saved token and fetch user profile
   useEffect(() => {
     const checkLoggedIn = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) return setLoading(false);
+
       try {
-        const token = localStorage.getItem('token');
-        
-        if (token) {
-          const { data } = await authAPI.getProfile();
-          setCurrentUser(data);
-        }
+        const { data } = await authAPI.getProfile();
+        setCurrentUser(data);
       } catch (err) {
         localStorage.removeItem('token');
+        setCurrentUser(null);
       } finally {
         setLoading(false);
       }
@@ -28,16 +29,13 @@ export const AuthProvider = ({ children }) => {
     checkLoggedIn();
   }, []);
 
-  // Register user
+  // 🆕 Register
   const register = async (userData) => {
     setError(null);
-    
     try {
       const { data } = await authAPI.register(userData);
-      
       localStorage.setItem('token', data.token);
       setCurrentUser(data);
-      
       return data;
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
@@ -45,16 +43,13 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Login user
+  // 🔑 Login
   const login = async (credentials) => {
     setError(null);
-    
     try {
       const { data } = await authAPI.login(credentials);
-      
       localStorage.setItem('token', data.token);
       setCurrentUser(data);
-      
       return data;
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
@@ -62,23 +57,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Logout user
+  // 🚪 Logout
   const logout = () => {
     localStorage.removeItem('token');
     setCurrentUser(null);
   };
 
-  const value = {
-    currentUser,
-    loading,
-    error,
-    register,
-    login,
-    logout,
-  };
-
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{ currentUser, loading, error, register, login, logout }}>
       {!loading && children}
     </AuthContext.Provider>
   );

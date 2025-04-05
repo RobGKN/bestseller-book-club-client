@@ -39,14 +39,16 @@ function App() {
                 <Route path="/books/:id" element={<BookDetail />} />
                 
                 {/* Protected Routes */}
-                <Route 
-                  path="/profile" 
-                  element={
-                    <ProtectedRoute>
-                      <Profile />
-                    </ProtectedRoute>
-                  } 
-                />
+                <Route path="/profile" element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                } />
+                <Route path="/profile/:id" element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                } />
                 <Route 
                   path="/reading-lists" 
                   element={

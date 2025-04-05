@@ -1,12 +1,11 @@
+// src/services/api.js
 import axios from 'axios';
 
 const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-const api = axios.create({
-  baseURL,
-});
+const api = axios.create({ baseURL });
 
-// Request interceptor for adding auth token
+// Attach token to every request automatically
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -20,23 +19,23 @@ api.interceptors.request.use(
 
 // Auth endpoints
 export const authAPI = {
-  register: (userData) => api.post('/auth/register', userData),
-  login: (credentials) => api.post('/auth/login', credentials),
+  register: (data) => api.post('/auth/register', data),
+  login: (data) => api.post('/auth/login', data),
   getProfile: () => api.get('/auth/me'),
 };
 
-// Book endpoints
+//  Book endpoints
 export const bookAPI = {
-  search: (query) => api.get(`/books/search?query=${query}`),
+  search: (query) => api.get(`/books/search?query=${encodeURIComponent(query)}`),
   getById: (id) => api.get(`/books/${id}`),
-  //getTopBooks: () => api.get('/books/top'),
+  // getTopBooks: () => api.get('/books/top'),
 };
 
 // Review endpoints
 export const reviewAPI = {
   getBookReviews: (bookId) => api.get(`/reviews/book/${bookId}`),
-  createReview: (bookId, reviewData) => api.post(`/reviews/book/${bookId}`, reviewData),
-  updateReview: (reviewId, reviewData) => api.put(`/reviews/${reviewId}`, reviewData),
+  createReview: (bookId, data) => api.post(`/reviews/book/${bookId}`, data),
+  updateReview: (reviewId, data) => api.put(`/reviews/${reviewId}`, data),
   deleteReview: (reviewId) => api.delete(`/reviews/${reviewId}`),
 };
 

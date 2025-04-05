@@ -81,11 +81,7 @@ const Register = () => {
         </div>
 
         <div className="flex justify-end">
-          <button
-            type="submit"
-            className="btn btn-primary"
-            disabled={isSubmitting}
-          >
+          <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
             {isSubmitting ? <Spinner size="small" /> : 'Register'}
           </button>
         </div>
