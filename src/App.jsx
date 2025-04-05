@@ -1,17 +1,23 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ReadingListProvider } from './context/ReadingListContext';
 import { useState, useEffect } from 'react';
+
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
+
+import { BookProvider } from './context/BookContext';
+
 import Home from './pages/Home';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import Login from './pages/Auth/Login';
+import Register from './pages/Auth/Register';
 import BookSearch from './pages/Books/BookSearch';
 import BookDetail from './pages/Books/BookDetail';
 import Profile from './pages/Profile/Profile';
 import CreateReadingList from './pages/ReadingLists/CreateReadingList';
 import ReadingListDetail from './pages/ReadingLists/ReadingListDetail';
-import ProtectedRoute from './components/ProtectedRoute';
+import ReadingLists from './pages/ReadingLists/ReadingLists';
+
+import ProtectedRoute from './components/auth/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';

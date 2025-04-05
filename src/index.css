@@ -1,21 +1,40 @@
+@import 'tailwindcss';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Keep only safe utility classes — no custom colors */
+
 @layer components {
   .btn {
-    @apply px-4 py-2 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75;
-  }
-  
-  .btn-primary {
-    @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500;
-  }
-  
-  .card {
-    @apply bg-white rounded-lg shadow-md overflow-hidden;
+    @apply px-4 py-2 font-semibold rounded focus:outline-none focus:ring-2;
   }
 
-  .test-utility {
-    @apply px-4 py-2 text-blue-600;
+  .btn-primary {
+    @apply bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-200 text-gray-800 hover:bg-gray-300;
+  }
+
+  .card {
+    @apply bg-white rounded-lg shadow p-4;
+  }
+
+  .spinner {
+    @apply animate-spin rounded-full border-4 border-gray-300 border-t-transparent w-8 h-8;
+  }
+
+  .form-input {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500;
+  }
+
+  .form-checkbox {
+    @apply text-blue-600 border-gray-300 rounded;
+  }
+
+  .text-error {
+    @apply text-red-500 text-sm;
   }
 }
