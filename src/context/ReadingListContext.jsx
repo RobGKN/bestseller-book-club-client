@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react';
+import { createContext, useState, useCallback } from 'react';
 import api from '../services/api';
 
 export const ReadingListContext = createContext();
@@ -10,7 +10,7 @@ export const ReadingListProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   // Get a user's reading lists
-  const getUserReadingLists = async (userId) => {
+  const getUserReadingLists = useCallback( async (userId) => {
     setLoading(true);
     setError(null);
     try {
@@ -23,7 +23,7 @@ export const ReadingListProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Get a single reading list
   const getReadingList = async (listId) => {
