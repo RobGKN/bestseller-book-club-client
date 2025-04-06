@@ -19,8 +19,16 @@ api.interceptors.request.use(
 
 // Auth endpoints
 export const authAPI = {
-  register: (data) => api.post('/auth/register', data),
-  login: (data) => api.post('/auth/login', data),
+  register: (userData, firebaseIdToken) =>
+    api.post('/auth/register', userData, {
+      headers: { Authorization: `Bearer ${firebaseIdToken}` },
+    }),
+    login: (firebaseIdToken) =>
+      api.post('/auth/login', {}, {
+        headers: {
+          Authorization: `Bearer ${firebaseIdToken}`
+        }
+      }),
   getProfile: () => api.get('/auth/me'),
 };
 

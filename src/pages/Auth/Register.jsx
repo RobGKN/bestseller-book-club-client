@@ -24,7 +24,7 @@ const Register = () => {
       toast.success('Account created!');
       navigate('/');
     } catch (err) {
-      toast.error('Registration failed');
+      toast.error('Registration failed' + err.message);
       console.error(err);
     } finally {
       setIsSubmitting(false);

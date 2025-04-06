@@ -1,6 +1,14 @@
 // src/context/AuthContext.jsx
 import { createContext, useState, useEffect } from 'react';
 import { authAPI } from '../services/api';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+} from 'firebase/auth';
+import { auth } from '../firebase';
+
 
 export const AuthContext = createContext();
 
@@ -29,31 +37,60 @@ export const AuthProvider = ({ children }) => {
     checkLoggedIn();
   }, []);
 
-  // 🆕 Register
-  const register = async (userData) => {
+  const register = async ({ email, password, name, username }) => {
     setError(null);
     try {
-      const { data } = await authAPI.register(userData);
+      // 1. Create user in Firebase
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const firebaseUser = userCredential.user;
+  
+      // 2. Get Firebase ID token
+      const idToken = await firebaseUser.getIdToken();
+  
+      // 3. Send token + profile data to backend to create a user record
+      const { data } = await authAPI.register(
+        { name, username, email },
+        idToken // pass token separately (see api.js)
+      );
+  
+      // 4. Store the JWT from backend
       localStorage.setItem('token', data.token);
       setCurrentUser(data);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed');
+      if (err.code === 'auth/email-already-in-use') {
+        //console.log('auth/emailalreadyinuse triggered');
+        setError('That email is already registered. Try logging in instead.');
+      } else {
+        setError(err.message || 'Registration failed');
+      }
       throw err;
     }
   };
 
-  // 🔑 Login
-  const login = async (credentials) => {
+  const login = async ({ email, password }) => {
     setError(null);
     try {
-      const { data } = await authAPI.login(credentials);
+      // 1. Log in via Firebase
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const firebaseUser = userCredential.user;
+  
+      // 2. Get Firebase ID token
+      const idToken = await firebaseUser.getIdToken();
+  
+      // 3. Send token to your backend to get JWT + profile
+      const { data } = await authAPI.login(idToken);
+  
+      // 4. Store JWT and update state
       localStorage.setItem('token', data.token);
       setCurrentUser(data);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
-      throw err;
+      const message = err.code === 'auth/user-not-found'
+        ? 'No account found for that email.'
+        : err.message || 'Login failed';
+      setError(message);
+      throw new Error(message);
     }
   };
 
